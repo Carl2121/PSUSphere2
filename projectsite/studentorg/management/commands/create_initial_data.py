@@ -24,18 +24,34 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             'Initial data for organization created successfully.'))
 
+    # def create_students(self, count):
+    #     fake = Faker()
+    #     for _ in range(count):
+    #         Student.objects.create(
+    #             student_id=f"{fake.random_int(2020,2024)}-{fake.random_int(1,8)}-{fake.random_number(digits=4)}",
+    #             lastname=fake.last_name(),
+    #             firstname=fake.first_name(),
+    #             middlename=fake.last_name(),
+    #             program=Program.objects.order_by('?').first()
+    #         )
+    #     self.stdout.write(self.style.SUCCESS(
+    #         'Initial data for students created successfully.'))
     def create_students(self, count):
         fake = Faker()
+        programs = Program.objects.all()
+        if not programs.exists():
+            self.stdout.write(self.style.ERROR("No programs available. Please add programs before creating students."))
+            return
+        
         for _ in range(count):
             Student.objects.create(
                 student_id=f"{fake.random_int(2020,2024)}-{fake.random_int(1,8)}-{fake.random_number(digits=4)}",
                 lastname=fake.last_name(),
                 firstname=fake.first_name(),
                 middlename=fake.last_name(),
-                # program=Program.objects.order_by('?').first()
+                program=programs.order_by('?').first()
             )
-        self.stdout.write(self.style.SUCCESS(
-            'Initial data for students created successfully.'))
+        self.stdout.write(self.style.SUCCESS('Initial data for students created successfully.'))
 
     def create_membership(self, count):
         fake = Faker()
